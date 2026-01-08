@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="StarLedger.Application/StarLedger.Application.csproj" Id="bff79c89-f4c4-46cf-af23-6e3721df10ec" />
   <Project Path="StarLedger.Domain/StarLedger.Domain.csproj" Id="b332a143-6c98-4851-a3d4-31fa5233eb53" />
+  <Project Path="StarLedger.Infrastructure/StarLedger.Infrastructure.csproj" Id="53fa2e6f-be82-4414-8a3b-51382912092d" />
+  <Project Path="StarLedger.WebApi/StarLedger.WebApi.csproj" Id="db30036a-afc8-47b5-becf-a320161485d1" />
 </Solution>
