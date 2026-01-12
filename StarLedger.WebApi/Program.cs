@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 
 // DI
 builder.Services.AddScoped<AddEntryUseCase>();
-builder.Services.AddScoped<ILedgerRepository, InMemoryRepository>();
+builder.Services.AddSingleton<ILedgerRepository, InMemoryRepository>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
