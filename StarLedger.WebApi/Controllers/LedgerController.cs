@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StarLedger.Application.UseCases;
+using StarLedger.Application.UseCases.Command;
+using StarLedger.Application.UseCases.Handler;
+using StarLedger.Application.UseCases.Query;
 
 namespace StarLedger.WebApi.Controllers
 {
@@ -7,18 +10,29 @@ namespace StarLedger.WebApi.Controllers
     [Route("ledger")]
     public class LedgerController : ControllerBase
     {
-        private readonly AddEntryUseCase _useCase;
+        private readonly AddEntryCommandHandler _commandHandler;
+        private readonly GetBalanceQueryHandler _queryHandler;
 
-        public LedgerController(AddEntryUseCase useCase)
+        
+
+        public LedgerController(AddEntryCommandHandler commandHandler, GetBalanceQueryHandler queryHandler)
         {
-            _useCase = useCase;
+            _commandHandler = commandHandler;
+            _queryHandler = queryHandler;
         }
 
         [HttpPost("entry")]
-        public IActionResult Add(AddEntryInput input)
+        public IActionResult Add(AddEntryCommand input)
         {
-            var result = _useCase.Execute(input);
-            return Ok(result);
+            _commandHandler.Handle(input);
+            return Accepted();
+        }
+
+        [HttpGet("balance")]
+        public IActionResult GetBalance()
+        {
+            var balance = _queryHandler.Handle(new GetBalanceQuery());
+            return Ok(balance);
         }
     }
 }
