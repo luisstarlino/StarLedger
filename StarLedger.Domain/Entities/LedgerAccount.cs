@@ -8,14 +8,13 @@ namespace StarLedger.Domain.Entities
     {
         private readonly List<LedgerEntry> _entries = new();
         public decimal Balance => _entries.Sum(e => e.Type == Enums.EntryType.Credit ? e.Amount : -e.Amount);
+        public List<LedgerEntry> HistoryEntries => _entries;
         public void AddEntry(LedgerEntry entry)
         {
 
             // --- Credit === ADD
-            var isCredit = entry.Type == Enums.EntryType.Credit;    // | type = 0 (Working well)
+            var isCredit = entry.Type == Enums.EntryType.Credit;    // | type = 0 
             var isDebid = entry.Type == Enums.EntryType.Debit;      // | type = 1
-
-
 
             if (entry.Type == Enums.EntryType.Debit && Balance == 0 || entry.Type == Enums.EntryType.Debit && Balance < entry.Amount)
                 throw new InvalidOperationException("You dont have credits!");
