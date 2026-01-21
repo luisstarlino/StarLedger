@@ -17,6 +17,7 @@ builder.Services.AddSingleton<ILedgerReadRepository, InMemoryReadRepository>();
 
 builder.Services.AddScoped<AddEntryCommandHandler>();
 builder.Services.AddScoped<GetBalanceQueryHandler>();
+builder.Services.AddScoped<GetHistoryEntriesHandler>();
 
 builder.Services.AddOpenApi();
 
