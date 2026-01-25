@@ -8,6 +8,6 @@ namespace StarLedger.Application.Interfaces
     public interface ILedgerReadRepository
     {
         decimal GetCurrentBalace();
-        List<HistoryEntriesOutput> GetHistoryEntries(DateTime from, DateTime to);
+        IReadOnlyList<HistoryEntriesOutput> GetHistoryEntries(DateTime from, DateTime to);
     }
 }
