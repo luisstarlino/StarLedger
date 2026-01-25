@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Caching.Memory;
 using Scalar.AspNetCore;
 using StarLedger.Application.Interfaces;
 using StarLedger.Application.UseCases;
@@ -11,9 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // DI
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<AddEntryUseCase>();
 builder.Services.AddSingleton<ILedgerRepository, InMemoryRepository>();
 builder.Services.AddSingleton<ILedgerReadRepository, InMemoryReadRepository>();
+builder.Services.AddSingleton<ILedgerReadRepository>(sp =>
+{
+    var baseRepo = new InMemoryReadRepository(sp.GetRequiredService<ILedgerRepository>());
+    return new InCachedLedgerRepository(baseRepo, sp.GetRequiredService<IMemoryCache>());
+});
 
 builder.Services.AddScoped<AddEntryCommandHandler>();
 builder.Services.AddScoped<GetBalanceQueryHandler>();
