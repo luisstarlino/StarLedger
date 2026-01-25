@@ -15,9 +15,9 @@ namespace StarLedger.Application.UseCases.Handler
             _repository = repository;
         }
 
-        public List<HistoryEntriesOutput> Handle()
+        public List<HistoryEntriesOutput> Handle(DateTime from, DateTime to)
         {
-            return _repository.GetHistoryEntries();
+            return _repository.GetHistoryEntries(from, to);
         }
     }
 }
