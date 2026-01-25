@@ -20,24 +20,19 @@ namespace StarLedger.Infrastructure.Pesistence
             return _repository.Get().Balance;
         }
 
-        public List<HistoryEntriesOutput> GetHistoryEntries()
+        public List<HistoryEntriesOutput> GetHistoryEntries(DateTime from, DateTime to)
         {
             // --- Get from DB
-            var histories = _repository.Get().HistoryEntries;
-
-            // --- Map
-            List<HistoryEntriesOutput> mapper = new();
-            foreach (var historyEntry in histories)
+            var histories = _repository.Get().HistoryEntries
+            .Where(e => e.Date >=from && e.Date <=to)
+            .Select(e => new HistoryEntriesOutput
             {
-                mapper.Add(new HistoryEntriesOutput
-                {
-                    Amount = historyEntry.Amount,
-                    Type = historyEntry.Type,
-                    Date = historyEntry.Date,
-                });
-            }
+                    Amount = e.Amount,
+                    Type = e.Type,
+                    Date = e.Date,
+            }).ToList();
 
-            return mapper;
+            return histories;
         }
     }
 }

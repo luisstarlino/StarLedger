@@ -3,6 +3,7 @@ using StarLedger.Application.UseCases;
 using StarLedger.Application.UseCases.Command;
 using StarLedger.Application.UseCases.Handler;
 using StarLedger.Application.UseCases.Query;
+using System.Globalization;
 
 namespace StarLedger.WebApi.Controllers
 {
@@ -15,7 +16,7 @@ namespace StarLedger.WebApi.Controllers
         private readonly GetHistoryEntriesHandler _historyEntriesHandler;
 
 
-        
+
 
         public LedgerController(AddEntryCommandHandler commandHandler, GetBalanceQueryHandler queryHandler, GetHistoryEntriesHandler historyEntriesHandler)
         {
@@ -40,9 +41,15 @@ namespace StarLedger.WebApi.Controllers
 
         [Route("history")]
         [HttpGet]
-        public IActionResult GetHistory()
+        public IActionResult GetHistory([FromQuery] string from, [FromQuery] string to)
         {
-            var historyEntry = _historyEntriesHandler.Handle();
+            if (!DateTime.TryParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var fromDate))
+                return BadRequest("Invalid 'from' date format. Use yyyy-MM-dd.");
+
+            if (!DateTime.TryParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var toDate))
+                return BadRequest("Invalid 'to' date format. Use yyyy-MM-dd.");
+
+            var historyEntry = _historyEntriesHandler.Handle(fromDate, toDate);
             return Ok(historyEntry);
         }
     }
