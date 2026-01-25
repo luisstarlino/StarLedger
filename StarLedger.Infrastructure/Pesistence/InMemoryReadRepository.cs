@@ -20,7 +20,7 @@ namespace StarLedger.Infrastructure.Pesistence
             return _repository.Get().Balance;
         }
 
-        public List<HistoryEntriesOutput> GetHistoryEntries(DateTime from, DateTime to)
+        public IReadOnlyList<HistoryEntriesOutput> GetHistoryEntries(DateTime from, DateTime to)
         {
             // --- Get from DB
             var histories = _repository.Get().HistoryEntries
