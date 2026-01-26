@@ -10,6 +10,12 @@ namespace StarLedger.Infrastructure.Pesistence
     {
         // --- IN MEMORY STORE
         private LedgerAccount _account = new();
+        private ILedgerCacheInvalidator _cleanCache;
+
+        public InMemoryRepository(ILedgerCacheInvalidator cacheRepository)
+        {
+            _cleanCache = cacheRepository;
+        }
 
 
         public LedgerAccount Get()
@@ -20,6 +26,7 @@ namespace StarLedger.Infrastructure.Pesistence
         public void Save(LedgerAccount account)
         {
             _account = account;
+            _cleanCache.Invalidate();
         }
     }
 }
