@@ -16,10 +16,11 @@ builder.Services.AddMemoryCache();
 builder.Services.AddScoped<AddEntryUseCase>();
 builder.Services.AddSingleton<ILedgerRepository, InMemoryRepository>();
 builder.Services.AddSingleton<ILedgerReadRepository, InMemoryReadRepository>();
+builder.Services.AddSingleton<ILedgerCacheInvalidator, LedgerCacheInvalidator>();
 builder.Services.AddSingleton<ILedgerReadRepository>(sp =>
 {
     var baseRepo = new InMemoryReadRepository(sp.GetRequiredService<ILedgerRepository>());
-    return new InCachedLedgerRepository(baseRepo, sp.GetRequiredService<IMemoryCache>());
+    return new InCachedLedgerRepository(baseRepo, sp.GetRequiredService<IMemoryCache>(), sp.GetRequiredService<ILedgerCacheInvalidator>());
 });
 
 builder.Services.AddScoped<AddEntryCommandHandler>();

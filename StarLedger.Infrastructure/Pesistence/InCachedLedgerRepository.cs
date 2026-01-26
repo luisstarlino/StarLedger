@@ -12,10 +12,12 @@ namespace StarLedger.Infrastructure.Pesistence
     public class InCachedLedgerRepository : ILedgerReadRepository
     {
         private readonly ILedgerReadRepository _inner;
+        private readonly ILedgerCacheInvalidator _invalidator;
         private readonly IMemoryCache _cache;
 
-        public InCachedLedgerRepository(ILedgerReadRepository inner, IMemoryCache cache)
+        public InCachedLedgerRepository(ILedgerReadRepository inner, IMemoryCache cache, ILedgerCacheInvalidator invalidator)
         {
+            _invalidator = invalidator;
             _inner = inner;
             _cache = cache;
         }
@@ -33,8 +35,11 @@ namespace StarLedger.Infrastructure.Pesistence
             if (_cache.TryGetValue(cacheKey, out IReadOnlyList<HistoryEntriesOutput> cached)) return cached;
 
             var result = _inner.GetHistoryEntries(from, to);
+            var optionsCache = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(5))
+                .AddExpirationToken(_invalidator.GetExpirationToken());
 
-            _cache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
+            _cache.Set(cacheKey, result, optionsCache);
 
             return result;
         }
